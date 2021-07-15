@@ -2,8 +2,6 @@
 #   encoding: utf8
 #   file: colour_filter.py
 
-from typing import Iterator, Text
-
 from gdb import parameter as get_parameter
 from gdb import Frame, frame_filters, execute
 from gdb.FrameDecorator import FrameDecorator
@@ -18,7 +16,7 @@ class FrameColorizer(FrameDecorator):
     Notes: There is not special support Frame.elided() property.
     """
 
-    def __init__(self, *args, depth=0, **kwargs):
+    def __init__(self, depth=0, *args, **kwargs):
         super(FrameColorizer, self).__init__(*args, **kwargs)
 
         self._depth = depth
@@ -155,7 +153,7 @@ class FilterProxy:
     properly on the first and the sole call.
     """
 
-    def __init__(self, frames: Iterator[Frame]):
+    def __init__(self, frames):
         self.frames = (FrameColorizer(frame, depth=ix)
                        for ix, frame in enumerate(frames))
 
@@ -190,7 +188,7 @@ class ColourFilter:
         # dictionary.
         frame_filters[self.name] = self
 
-    def filter(self, iters: Iterator[Frame]) -> Iterator[Frame]:
+    def filter(self, iters):
         return FilterProxy(iters)
 
 
